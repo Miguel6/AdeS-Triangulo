@@ -112,13 +112,6 @@ public class Triangle {
 
 	}
 
-	private double calculateASin(double a, double b) {
-		if (a > b) {
-			return Math.asin(b / a);
-		}
-		return Math.asin(a / b);
-	}
-
 	private boolean isScalene() {
 		return this.getSideA() != this.getSideB() && this.getSideA() != this.getSideC()
 				&& this.getSideB() != this.getSideC();
