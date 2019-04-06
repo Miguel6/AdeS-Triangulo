@@ -1,5 +1,7 @@
 package project;
 
+import constants.TriangleTypes;
+import exceptions.InvalidTriangleException;
 import exceptions.LengthException;
 
 public class Triangle {
@@ -16,11 +18,14 @@ public class Triangle {
 		this.setSideC(1);
 	}
 
-	public Triangle(double sideA, double sideB, double sideC) throws LengthException {
+	public Triangle(double sideA, double sideB, double sideC) throws LengthException, InvalidTriangleException {
 		this.validator = new Validator();
 		this.setSideA(sideA);
 		this.setSideB(sideB);
 		this.setSideC(sideC);
+		if (!this.isATriangle()) {
+			throw new InvalidTriangleException("No es un triangulo valido");
+		}
 	}
 
 	public void setSideA(double length) throws LengthException {
@@ -47,6 +52,76 @@ public class Triangle {
 		}
 	}
 
+	public boolean isATriangle() {
+		return (this.getSideA() + this.getSideB()) > this.getSideC()
+				&& (this.getSideA() + this.getSideC()) > this.getSideB()
+				&& (this.getSideB() + this.getSideC()) > this.getSideA();
+	}
+
+	public TriangleTypes getTriangleTypeBySide() throws InvalidTriangleException {
+		if (this.isATriangle()) {
+			if (this.isEquilateral()) {
+				System.out.println("Es Equilatero");
+				return TriangleTypes.EQUILATERO;
+			} else if (this.isIsosceles()) {
+				System.out.println("Es Isosceles");
+				return TriangleTypes.ISOSCELES;
+			}
+			System.out.println("Es Escaleno");
+			return TriangleTypes.ESCALENO;
+		} else {
+			throw new InvalidTriangleException("No es un triangulo valido");
+		}
+	}
+
+	public TriangleTypes getTriangleTypeByAngle() throws InvalidTriangleException {
+		if (this.isATriangle()) {
+			return this.returnTriangleTypeByAngle();
+		} else {
+			throw new InvalidTriangleException("No es un triangulo valido");
+		}
+	}
+
+	private TriangleTypes returnTriangleTypeByAngle() {
+		if (this.isEquilateral()) {
+			return TriangleTypes.ACUTANGULO;
+		}
+
+		/**
+		 * angleA, es el "opuesto" al lado a angleB, es el "opuesto" al lado b angleC,
+		 * es el "opuesto" al lado c
+		 */
+		double angleA = Math.toDegrees(Math.acos( ( Math.pow(this.getSideA() ,2 ) + Math.pow(this.getSideB() ,2 )  - Math.pow(this.getSideC() ,2 ) ) / (2 * this.getSideA() * this.getSideB())));
+		double angleB = Math.toDegrees(Math.acos( ( Math.pow(this.getSideA() ,2 ) + Math.pow(this.getSideC() ,2 )  - Math.pow(this.getSideB() ,2 ) ) / (2 * this.getSideA() * this.getSideC())));
+		double angleC = 180 - angleA - angleB;
+		return null;
+//		if(angleAB >= 180) {
+//			
+//		}
+	}
+
+	private double calculateASin(double a, double b) {
+		if (a > b) {
+			return Math.asin(b / a);
+		}
+		return Math.asin(a / b);
+	}
+
+	private boolean isScalene() {
+		return this.getSideA() != this.getSideB() && this.getSideA() != this.getSideC()
+				&& this.getSideB() != this.getSideC();
+	}
+
+	private boolean isIsosceles() {
+		return ((this.getSideA() == this.getSideB() && this.getSideA() != this.getSideC())
+				|| (this.getSideA() == this.getSideC() && this.getSideA() != this.getSideB())
+				|| (this.getSideB() == this.getSideC() && this.getSideB() != this.getSideA()));
+	}
+
+	private boolean isEquilateral() {
+		return this.getSideA() == this.getSideB() && this.getSideB() == this.getSideC();
+	}
+
 	public double getSideA() {
 		return this.sideA;
 	}
@@ -58,5 +133,4 @@ public class Triangle {
 	public double getSideC() {
 		return this.sideC;
 	}
-
 }
