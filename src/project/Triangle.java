@@ -82,22 +82,34 @@ public class Triangle {
 		}
 	}
 
-	private TriangleTypes returnTriangleTypeByAngle() {
-		if (this.isEquilateral()) {
+	private TriangleTypes returnTriangleTypeByAngle() throws InvalidTriangleException {
+		if (this.isATriangle()) {
+
+			if (this.isEquilateral()) {
+				return TriangleTypes.ACUTANGULO;
+			}
+
+			/**
+			 * angleA, es el "opuesto" al lado a angleB, es el "opuesto" al lado b angleC,
+			 * es el "opuesto" al lado c
+			 */
+			double angleA = Math.toDegrees(Math
+					.acos((Math.pow(this.getSideA(), 2) + Math.pow(this.getSideB(), 2) - Math.pow(this.getSideC(), 2))
+							/ (2 * this.getSideA() * this.getSideB())));
+			double angleB = Math.toDegrees(Math
+					.acos((Math.pow(this.getSideA(), 2) + Math.pow(this.getSideC(), 2) - Math.pow(this.getSideB(), 2))
+							/ (2 * this.getSideA() * this.getSideC())));
+			double angleC = 180 - angleA - angleB;
+			if ((angleA < 180 && angleA > 90) || (angleB < 180 && angleB > 90) || (angleC < 180 && angleC > 90)) {
+				return TriangleTypes.OBTUSANGULO;
+			} else if (angleA == 90 || angleB == 90 || angleC == 90) {
+				return TriangleTypes.RECTANGULO;
+			}
 			return TriangleTypes.ACUTANGULO;
+		}else {
+			throw new InvalidTriangleException("No es un triangulo valido");
 		}
 
-		/**
-		 * angleA, es el "opuesto" al lado a angleB, es el "opuesto" al lado b angleC,
-		 * es el "opuesto" al lado c
-		 */
-		double angleA = Math.toDegrees(Math.acos( ( Math.pow(this.getSideA() ,2 ) + Math.pow(this.getSideB() ,2 )  - Math.pow(this.getSideC() ,2 ) ) / (2 * this.getSideA() * this.getSideB())));
-		double angleB = Math.toDegrees(Math.acos( ( Math.pow(this.getSideA() ,2 ) + Math.pow(this.getSideC() ,2 )  - Math.pow(this.getSideB() ,2 ) ) / (2 * this.getSideA() * this.getSideC())));
-		double angleC = 180 - angleA - angleB;
-		return null;
-//		if(angleAB >= 180) {
-//			
-//		}
 	}
 
 	private double calculateASin(double a, double b) {
